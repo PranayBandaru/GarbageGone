@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">DTL app</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_remarks">Enter Remarks</string>
+    <string name="take_a_picture">Take a picture</string>
+    <string name="click_to_take_a_picture_to_upload">Click to take a picture to upload</string>
+    <string name="submit">SUBMIT</string>
+    <string name="displayarea">displayarea</string>
+    <string name="title_activity_activity2">activity2</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="desc">IMGView</string>
+</resources>
