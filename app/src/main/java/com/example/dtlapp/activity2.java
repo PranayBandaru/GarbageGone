@@ -90,6 +90,20 @@ public class activity2 extends AppCompatActivity {
         }
     }
 
+    public void submitb(View view) {
+        if(currentDateandTime == null)
+        {
+            Toast.makeText(getApplicationContext(),"NO TIME STAMP captured",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"Time Stamp: "+currentDateandTime,Toast.LENGTH_LONG).show();
+        }
+
+
+
+    }
+
     /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -101,6 +115,7 @@ public class activity2 extends AppCompatActivity {
     }*/
 
     public class GPSTracker extends Service implements LocationListener {
+
 
         //private static final Location TODO = ;
         private final Context mContext;
@@ -115,8 +130,8 @@ public class activity2 extends AppCompatActivity {
         boolean canGetLocation = false;
 
         Location location; // Location
-        double latitude; // Latitude
-        double longitude; // Longitude
+        public double latitude; // Latitude
+        public double longitude; // Longitude
 
         // The minimum distance to change Updates in meters
         private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
@@ -315,6 +330,8 @@ public class activity2 extends AppCompatActivity {
         }
     }
     GPSTracker gps;
+
+    public String currentDateandTime;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if the result is capturing Image
@@ -340,7 +357,7 @@ public class activity2 extends AppCompatActivity {
                     // \n is for new line
                     cords.setText("Latitude:" + latitude+ "  Longitude: "+longitude);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-                    String currentDateandTime = sdf.format(new Date());
+                    currentDateandTime = sdf.format(new Date());
                     timeholder.setText("Time: "+ currentDateandTime);
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {
