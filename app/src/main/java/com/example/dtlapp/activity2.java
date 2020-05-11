@@ -13,15 +13,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,6 +20,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
+import com.firebase.client.Firebase;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,17 +42,21 @@ public class activity2 extends AppCompatActivity {
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     EditText cords;
     EditText timeholder;
+    Firebase f;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(("GarbageGone"));
         setContentView(R.layout.activity_activity2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         imageView = (ImageView) findViewById(R.id.pictHolder);
         cords = (EditText) findViewById(R.id.Cords);
         timeholder = (EditText) findViewById(R.id.timeholder);
         setSupportActionBar(toolbar);
-
+        Firebase.setAndroidContext(this);
+        f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +106,9 @@ public class activity2 extends AppCompatActivity {
 
 
 
+    }
+
+    public void dosomething(View view) {
     }
 
     /*@Override
