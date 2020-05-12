@@ -27,8 +27,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseApp;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -43,7 +48,7 @@ public class activity2 extends AppCompatActivity {
     EditText cords;
     EditText timeholder;
     Firebase f;
-
+    StorageReference mstorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +60,14 @@ public class activity2 extends AppCompatActivity {
         cords = (EditText) findViewById(R.id.Cords);
         timeholder = (EditText) findViewById(R.id.timeholder);
         setSupportActionBar(toolbar);
-        Firebase.setAndroidContext(this);
-        f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
+        //Firebase.setAndroidContext(this);
+
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        mstorage = FirebaseStorage.getInstance().getReference();
+
+        //f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,9 +373,10 @@ public class activity2 extends AppCompatActivity {
                     double longitude = gps.getLongitude();
 
                     // \n is for new line
+
                     cords.setText("Latitude:" + latitude+ "  Longitude: "+longitude);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-                    currentDateandTime = sdf.format(new Date());
+                    currentDateandTime = sdf.format(new Date().getTime());
                     timeholder.setText("Time: "+ currentDateandTime);
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {

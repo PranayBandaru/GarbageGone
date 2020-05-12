@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
 
     TabLayout mytab;
-    ViewPager mypage;
+    public ViewPager mypage;
     EditText emailf;
     EditText passf;
 
@@ -58,14 +58,10 @@ public class MainActivity extends AppCompatActivity {
         mypage.setAdapter(new myadapter(getSupportFragmentManager()));
         mytab.setupWithViewPager(mypage);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(MainActivity.this,loggedIn.class));
-                }
-            }
-        };
+        //mypage.setCurrentItem(0);
+
+
+
 
         mytab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -107,6 +103,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void signin(View view) {
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                if(firebaseAuth.getCurrentUser() != null){
+
+                    //Toast.makeText(MainActivity.this, "Bleeeeep", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(MainActivity.this,loggedIn.class));
+                }
+            }
+        };
         startSignin();
 
     }
@@ -115,7 +122,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     public void startSignin(){
@@ -124,11 +139,29 @@ public class MainActivity extends AppCompatActivity {
         passf = (EditText)findViewById(R.id.passfield);
         String email = emailf.getText().toString();
         String pass = passf.getText().toString();
+        //emailf.setText("");
+        //passf.setText("");
+        if(mypage.getCurrentItem() == 1) {
+            mAuth.addAuthStateListener(mAuthListener);
+
+        }
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+
+                if(firebaseAuth.getCurrentUser() != null  && mypage.getCurrentItem() == 1){
+                    //Toast.makeText(MainActivity.this, "Blooop", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(MainActivity.this,loggedIn.class));
+
+                }
+            }
+        };
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(email)){
 
             Toast.makeText(MainActivity.this, "Please enter a username and password", Toast.LENGTH_LONG).show();
         }
-        else
+        else if(mypage.getCurrentItem() == 1)
         {
         mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -162,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
             if(position == 1)
             {
                 return new frag2();
+
             }
             else
                 {

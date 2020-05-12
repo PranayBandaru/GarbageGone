@@ -53,20 +53,26 @@ public class frag2 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser() != null){
-                    startActivity(new Intent(getActivity(),loggedIn.class));
-                }
-            }
-        };
+
         return view;
     }
 
 
     public void signin(View view) {
 
+        Toast.makeText(getActivity(), "Bleeeeep", Toast.LENGTH_LONG).show();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                if(firebaseAuth.getCurrentUser() != null){
+
+                    Toast.makeText(getActivity(), "Bleeeeep", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getActivity(),loggedIn.class));
+                }
+            }
+        };
         startSignin();
 
     }
@@ -76,13 +82,25 @@ public class frag2 extends Fragment {
     public void onStart() {
         super.onStart();
 
-        mAuth.addAuthStateListener(mAuthListener);
+        //mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     public void startSignin(){
 
         String email = emailf.getText().toString();
         String pass = emailf.getText().toString();
+
+
+        mAuth.addAuthStateListener(mAuthListener);
+
         if(TextUtils.isEmpty(email) || TextUtils.isEmpty(email)){
 
             Toast.makeText(getActivity(), "Please enter a username and password", Toast.LENGTH_LONG).show();
@@ -100,4 +118,6 @@ public class frag2 extends Fragment {
 
         }
     }
+
+
 }
