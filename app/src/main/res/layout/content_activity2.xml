@@ -23,8 +23,8 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="139dp"
-        android:layout_marginEnd="140dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginEnd="120dp"
         android:layout_marginBottom="316dp"
         android:onClick="takePhoto"
         android:text="@string/take_a_picture"
@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/remarks"
         android:layout_width="362dp"
         android:layout_height="57dp"
         android:layout_marginStart="24dp"
@@ -51,18 +51,18 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginBottom="54dp"
+        android:layout_width="406dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="2dp"
+        android:background="@color/colorPrimary"
+        android:onClick="submitb"
         android:text="@string/submit"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:onClick="submitb"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/Cords"
         android:layout_width="284dp"
         android:layout_height="46dp"
@@ -70,18 +70,18 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="46dp"
+        android:editable="false"
         android:ems="10"
         android:hint="Location Coordinates"
-        android:editable="false"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintBottom_toTopOf="@+id/remarks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
+    <TextView
         android:id="@+id/timeholder"
         android:layout_width="278dp"
         android:layout_height="48dp"
@@ -89,11 +89,11 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="10dp"
+        android:editable="false"
         android:ems="10"
         android:hint="Time:"
-        android:editable="false"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editText"
+        app:layout_constraintBottom_toTopOf="@+id/remarks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Cords" />

@@ -3,6 +3,7 @@ package com.example.dtlapp;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -19,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,13 +31,25 @@ import androidx.core.app.ActivityCompat;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseApp;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -45,10 +60,19 @@ public class activity2 extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
     private ImageView imageView;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    EditText cords;
-    EditText timeholder;
+    TextView cords;
+    TextView timeholder;
+    EditText remarks;
     Firebase f;
+    FirebaseStorage storage;
     StorageReference mstorage;
+    DatabaseReference mdatabse;
+    ProgressDialog mprog;
+    Intent data1;
+    Uri downloadUri;
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference databaseReference;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +81,28 @@ public class activity2 extends AppCompatActivity {
         setContentView(R.layout.activity_activity2);
         Toolbar toolbar = findViewById(R.id.toolbar);
         imageView = (ImageView) findViewById(R.id.pictHolder);
-        cords = (EditText) findViewById(R.id.Cords);
-        timeholder = (EditText) findViewById(R.id.timeholder);
+        cords = (TextView) findViewById(R.id.Cords);
+        timeholder = (TextView) findViewById(R.id.timeholder);
+        remarks = (EditText) findViewById(R.id.remarks);
         setSupportActionBar(toolbar);
+        mprog = new ProgressDialog(this);
         //Firebase.setAndroidContext(this);
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mstorage = FirebaseStorage.getInstance().getReference();
-
+        mdatabse = FirebaseDatabase.getInstance().getReference().child("App");
         //f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //DatabaseReference myRef = database.getReference("message");
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+        //databaseReference.setValue("Hello, World!");
+
+        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+
+        databaseReference.setValue("Hello, World!");
+
+        db = FirebaseFirestore.getInstance();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,19 +140,7 @@ public class activity2 extends AppCompatActivity {
         }
     }
 
-    public void submitb(View view) {
-        if(currentDateandTime == null)
-        {
-            Toast.makeText(getApplicationContext(),"NO TIME STAMP captured",Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"Time Stamp: "+currentDateandTime,Toast.LENGTH_LONG).show();
-        }
 
-
-
-    }
 
     public void dosomething(View view) {
     }
@@ -359,6 +382,9 @@ public class activity2 extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Bitmap photo = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
             imageView.setImageBitmap(photo);
+
+            data1 = data;
+
         }
 
 
@@ -378,6 +404,7 @@ public class activity2 extends AppCompatActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     currentDateandTime = sdf.format(new Date().getTime());
                     timeholder.setText("Time: "+ currentDateandTime);
+
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {
                     // Can't get location.
@@ -398,6 +425,93 @@ public class activity2 extends AppCompatActivity {
                         .show();
             }
         }
+
+    }
+
+    public void submitb(View view) {
+        DatabaseReference conditionRef = mRootRef.child("condition");
+        final DatabaseReference time = mRootRef.child("Time");
+        final DatabaseReference loc = mRootRef.child("Location");
+        final DatabaseReference rem = mRootRef.child("Remarks");
+        conditionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        if(currentDateandTime == null)
+        {
+            Toast.makeText(getApplicationContext(),"NO TIME STAMP captured",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"Time Stamp: "+currentDateandTime,Toast.LENGTH_LONG).show();
+
+
+            mprog.setMessage("Uploading...");
+            mprog.show();
+
+
+            Bundle extras = data1.getExtras();
+            Bitmap bitmap = (Bitmap) data1.getExtras().get("data");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] dataBAOS = baos.toByteArray();
+            imageView.setImageBitmap(bitmap);
+
+            final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://garbagegone-fa7e4.appspot.com/");
+            //final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+
+            StorageReference imagesRef = storageRef.child("filename" + new Date().getTime());
+
+            Uri uri = data1.getData();
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("image/jpg")
+                    .build();
+
+
+
+            //StorageReference filepath = mstorage.child("Photos").child(uri.getLastPathSegment());
+            UploadTask uploadTask = imagesRef.putBytes(dataBAOS);
+
+            databaseReference.setValue("Blllllwwww");
+
+            databaseReference.setValue(timeholder.getText());
+            databaseReference.setValue(remarks.getText());
+            databaseReference.setValue(cords.getText());
+            Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
+            System.out.println("Remarks:"+     remarks.getText()   );
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Uri downloadurl = storageRef.getStorage().getDownloaduUrl();
+
+                    //DatabaseReference newPost = databaseReference.push();
+                        //newPost.child("Time").setValue(timeholder.getText());
+                        //newPost.child("Location").setValue(cords.getText());
+                        //newPost.child("Remarks").setValue(remarks.getText());
+                        //newPost.child("Image").setValue(downloadUri);
+
+
+
+                    Toast.makeText(activity2.this,"Successfull",Toast.LENGTH_LONG);
+                    mprog.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+        }
+
+
 
     }
 
