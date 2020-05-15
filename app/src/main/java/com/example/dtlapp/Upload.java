@@ -6,10 +6,10 @@ public class Upload {
     private String mTime;
     private  String mImageURL;
 
-    public Upload()
-    {
+    //public Upload(String trim, String s)
+    //{
 
-    }
+    //}
 
     public Upload(String Cords, String Time, String Remarks, String ImageURL)
     {

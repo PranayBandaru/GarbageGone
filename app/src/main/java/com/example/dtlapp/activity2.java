@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +16,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -61,6 +66,7 @@ public class activity2 extends AppCompatActivity {
     private ImageView imageView;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     TextView cords;
+    String coordinates,times,remarkstxt;
     TextView timeholder;
     EditText remarks;
     Firebase f;
@@ -70,9 +76,12 @@ public class activity2 extends AppCompatActivity {
     ProgressDialog mprog;
     Intent data1;
     Uri downloadUri;
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference databaseReference;
+    StorageReference imagesRef;
+    //DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    //DatabaseReference databaseReference;
     FirebaseFirestore db;
+    Uri uri;
+    Uri imgg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +98,18 @@ public class activity2 extends AppCompatActivity {
         //Firebase.setAndroidContext(this);
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        mstorage = FirebaseStorage.getInstance().getReference();
-        mdatabse = FirebaseDatabase.getInstance().getReference().child("App");
+        mstorage = FirebaseStorage.getInstance().getReference("Photos");
+        mdatabse = FirebaseDatabase.getInstance().getReference("Photos");
+
         //f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         //DatabaseReference myRef = database.getReference("message");
 
         //databaseReference.setValue("Hello, World!");
 
-        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+        //databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
 
-        databaseReference.setValue("Hello, World!");
+        //databaseReference.setValue("Hello, World!");
 
         db = FirebaseFirestore.getInstance();
 
@@ -113,12 +123,21 @@ public class activity2 extends AppCompatActivity {
         });
     }
 
+    private Uri getImageUri(Context applicationContext, Bitmap photo) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(activity2.this.getContentResolver(), photo, "Title", null);
+        return Uri.parse(path);
+    }
+
+
+
     public void takePhoto(View view) {
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
         } else {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
         }
@@ -377,11 +396,18 @@ public class activity2 extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if the result is capturing Image
         super.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);super.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            imgg = data.getData();
+
             Bitmap photo = (Bitmap) Objects.requireNonNull(data.getExtras()).get("data");
             imageView.setImageBitmap(photo);
+
+            imgg = getImageUri(getApplicationContext(), photo);
+            if(imgg == (null))
+            {
+                Toast.makeText(activity2.this,"DATA IS NULL",Toast.LENGTH_LONG).show();
+            }
 
             data1 = data;
 
@@ -401,9 +427,11 @@ public class activity2 extends AppCompatActivity {
                     // \n is for new line
 
                     cords.setText("Latitude:" + latitude+ "  Longitude: "+longitude);
+                    coordinates = ("Latitude:" + latitude+ "  Longitude: "+longitude);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     currentDateandTime = sdf.format(new Date().getTime());
                     timeholder.setText("Time: "+ currentDateandTime);
+                    times = ("Time: "+ currentDateandTime);
 
                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {
@@ -429,10 +457,17 @@ public class activity2 extends AppCompatActivity {
     }
 
     public void submitb(View view) {
-        DatabaseReference conditionRef = mRootRef.child("condition");
-        final DatabaseReference time = mRootRef.child("Time");
-        final DatabaseReference loc = mRootRef.child("Location");
-        final DatabaseReference rem = mRootRef.child("Remarks");
+        //DatabaseReference conditionRef = mRootRef.child("condition");
+        //final DatabaseReference time = mRootRef.child("Time");
+        //final DatabaseReference loc = mRootRef.child("Location");
+        //final DatabaseReference rem = mRootRef.child("Remarks");
+
+        remarkstxt = remarks.getText().toString();
+
+        mprog.setMessage("Uploading...");
+        mprog.show();
+        UploadFile();
+        /*
         conditionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -443,7 +478,7 @@ public class activity2 extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
         if(currentDateandTime == null)
         {
             Toast.makeText(getApplicationContext(),"NO TIME STAMP captured",Toast.LENGTH_LONG).show();
@@ -453,8 +488,6 @@ public class activity2 extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Time Stamp: "+currentDateandTime,Toast.LENGTH_LONG).show();
 
 
-            mprog.setMessage("Uploading...");
-            mprog.show();
 
 
             Bundle extras = data1.getExtras();
@@ -462,14 +495,14 @@ public class activity2 extends AppCompatActivity {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] dataBAOS = baos.toByteArray();
-            imageView.setImageBitmap(bitmap);
+            //imageView.setImageBitmap(bitmap);
 
             final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://garbagegone-fa7e4.appspot.com/");
             //final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
 
-            StorageReference imagesRef = storageRef.child("filename" + new Date().getTime());
+            imagesRef = mstorage.child("filename" + new Date().getTime());
 
-            Uri uri = data1.getData();
+            uri = data1.getData();
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg")
                     .build();
@@ -477,14 +510,14 @@ public class activity2 extends AppCompatActivity {
 
 
             //StorageReference filepath = mstorage.child("Photos").child(uri.getLastPathSegment());
-            UploadTask uploadTask = imagesRef.putBytes(dataBAOS);
+            UploadTask uploadTask = mstorage.putBytes(dataBAOS);
 
-            databaseReference.setValue("Blllllwwww");
+            //databaseReference.setValue("Blllllwwww");
 
-            databaseReference.setValue(timeholder.getText());
-            databaseReference.setValue(remarks.getText());
-            databaseReference.setValue(cords.getText());
-            Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
+            //databaseReference.setValue(timeholder.getText());
+            //databaseReference.setValue(remarks.getText());
+            //databaseReference.setValue(cords.getText());
+            //Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
             System.out.println("Remarks:"+     remarks.getText()   );
 
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -502,6 +535,7 @@ public class activity2 extends AppCompatActivity {
 
                     Toast.makeText(activity2.this,"Successfull",Toast.LENGTH_LONG);
                     mprog.dismiss();
+                    //finish();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -512,6 +546,65 @@ public class activity2 extends AppCompatActivity {
         }
 
 
+
+    }
+    private String getFileExtension(Uri gfeuri)
+    {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(gfeuri));
+    }
+
+    private void UploadFile()
+    {
+
+        Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
+        if(imgg != null)
+        {
+            StorageReference filereRef = mstorage.child(+System.currentTimeMillis()+"."+getFileExtension(imgg));
+            filereRef.putFile(imgg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    /*
+                    mprog.setProgress(0);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mprog.setProgress(0);
+                        }
+                    },500);
+
+                     */
+                    Toast.makeText(activity2.this,"Upload Successfull!",Toast.LENGTH_SHORT).show();
+                    Upload up = new Upload(coordinates.toString().trim(),times,remarkstxt,taskSnapshot.getUploadSessionUri().toString());
+                    String uploadID = mdatabse.push().getKey();
+                    mdatabse.child(uploadID).setValue(up);
+                    //mdatabse.child(uploadID).setValue("YEEEEEEEEEEEEE");
+
+                    startActivity(new Intent(activity2.this, MainActivity.class));
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    Toast.makeText(activity2.this,e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    //mprog.setProgress((int) progress);
+
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(activity2.this,"NO IMAGE CAPTURED",Toast.LENGTH_LONG).show();
+        }
 
     }
 
