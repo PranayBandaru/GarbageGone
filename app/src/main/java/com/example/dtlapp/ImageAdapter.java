@@ -41,7 +41,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.cordstext.setText(currentupload.getcords());
         holder.remarkstext.setText(currentupload.getremarks());
         holder.timetext.setText(currentupload.gettime());
-        Picasso.get().load(currentupload.getImageURL()).placeholder(R.mipmap.ic_launcher).fit().centerCrop().into(holder.imgview);
+        Picasso.get().load(currentupload.getImageURL()).into(holder.imgview);
 
         //fit().centerCrop().
     }
