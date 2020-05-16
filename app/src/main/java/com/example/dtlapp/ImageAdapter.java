@@ -1,14 +1,18 @@
 package com.example.dtlapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +26,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private Context mcontext;
     private List<Upload> mupload;
     onItemClickL mListener;
+    String cordinatesObtained;
+
+    public Button mapbutton;
+
+    public interface OnItemClickListener{
+        void OnMapB(int position);
+    }
 
     public ImageAdapter(Context context, List<Upload> uploads){
         mcontext = context;
@@ -32,6 +43,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mcontext).inflate(R.layout.image_item,parent,false);
+
+        mapbutton = v.findViewById(R.id.mapbutton);
         return new ImageViewHolder(v);
     }
 
@@ -39,9 +52,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload currentupload = mupload.get(position);
         holder.cordstext.setText(currentupload.getcords());
+        cordinatesObtained = currentupload.getcords();
         holder.remarkstext.setText(currentupload.getremarks());
         holder.timetext.setText(currentupload.gettime());
+        mapbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Uri gmmIntentUri = Uri.parse(cordinatesObtained);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                mcontext.startActivity(mapIntent);
+
+            }
+        });
+
+
         Picasso.get().load(currentupload.getImageURL()).into(holder.imgview);
+
 
         //fit().centerCrop().
     }
@@ -67,7 +96,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             remarkstext = itemView.findViewById(R.id.Remarkstext);
             imgview = itemView.findViewById(R.id.ImageCardV);
             itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
+            //itemView.setOnCreateContextMenuListener(this);
+
+
+
         }
 
         @Override
@@ -87,6 +119,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             menu.setHeaderTitle("Select Action");
             MenuItem OpenMaps = menu.add(Menu.NONE,1,1,"Open MAPS");
             OpenMaps.setOnMenuItemClickListener(this);
+
         }
 
         @Override
@@ -114,4 +147,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     {
         mListener = listener;
     }
+
+
 }

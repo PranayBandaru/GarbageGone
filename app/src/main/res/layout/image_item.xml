@@ -49,11 +49,12 @@
             android:layout_marginTop="1dp"
             android:layout_marginBottom="6dp"/>
         <Button
-            android:layout_width="120dp"
+            android:layout_width="140dp"
+            android:id="@+id/mapbutton"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Go To maps"
             android:textColor="@android:color/white"
+            android:text="Go to maps"
             android:textSize="14sp"
             android:onClick="mapintent"
 

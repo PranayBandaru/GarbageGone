@@ -112,7 +112,7 @@ public class activity2 extends AppCompatActivity {
         //databaseReference.setValue("Hello, World!");
 
         db = FirebaseFirestore.getInstance();
-
+/*
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +121,8 @@ public class activity2 extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+ */
     }
 
     private Uri getImageUri(Context applicationContext, Bitmap photo) {
@@ -427,7 +429,7 @@ public class activity2 extends AppCompatActivity {
                     // \n is for new line
 
                     cords.setText("geo:" + latitude+ ","+longitude);
-                    coordinates = ("Latitude:" + latitude+ "  Longitude: "+longitude);
+                    coordinates = ("geo:0,0?q=" + latitude+ ","+longitude+"(Pin)");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     currentDateandTime = sdf.format(new Date().getTime());
                     timeholder.setText("Time: "+ currentDateandTime);
@@ -462,11 +464,23 @@ public class activity2 extends AppCompatActivity {
         //final DatabaseReference loc = mRootRef.child("Location");
         //final DatabaseReference rem = mRootRef.child("Remarks");
 
+
         remarkstxt = remarks.getText().toString();
 
-        mprog.setMessage("Uploading...");
-        mprog.show();
-        UploadFile();
+        if(remarkstxt.equals(""))
+        {
+            Toast.makeText(activity2.this,"Please Enter Remarks",Toast.LENGTH_LONG).show();
+        }
+        else if(coordinates== null || times == null)
+        {
+             Toast.makeText(activity2.this,"Location Disabled, PLease enable location services and try capturing again",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+
+            mprog.setMessage("Uploading...");
+            mprog.show();
+            UploadFile();
         /*
         conditionRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -479,70 +493,64 @@ public class activity2 extends AppCompatActivity {
 
             }
         });*/
-        if(currentDateandTime == null)
-        {
-            Toast.makeText(getApplicationContext(),"NO TIME STAMP captured",Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"Time Stamp: "+currentDateandTime,Toast.LENGTH_LONG).show();
+            if (currentDateandTime == null) {
+                Toast.makeText(getApplicationContext(), "NO TIME STAMP captured", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Time Stamp: " + currentDateandTime, Toast.LENGTH_LONG).show();
 
 
+                Bundle extras = data1.getExtras();
+                Bitmap bitmap = (Bitmap) data1.getExtras().get("data");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] dataBAOS = baos.toByteArray();
+                //imageView.setImageBitmap(bitmap);
+
+                final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://garbagegone-fa7e4.appspot.com/");
+                //final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+
+                imagesRef = mstorage.child("filename" + new Date().getTime());
+
+                uri = data1.getData();
+                StorageMetadata metadata = new StorageMetadata.Builder()
+                        .setContentType("image/jpg")
+                        .build();
 
 
-            Bundle extras = data1.getExtras();
-            Bitmap bitmap = (Bitmap) data1.getExtras().get("data");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] dataBAOS = baos.toByteArray();
-            //imageView.setImageBitmap(bitmap);
+                //StorageReference filepath = mstorage.child("Photos").child(uri.getLastPathSegment());
+                UploadTask uploadTask = mstorage.putBytes(dataBAOS);
 
-            final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://garbagegone-fa7e4.appspot.com/");
-            //final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://garbagegone-fa7e4.firebaseio.com/");
+                //databaseReference.setValue("Blllllwwww");
 
-            imagesRef = mstorage.child("filename" + new Date().getTime());
+                //databaseReference.setValue(timeholder.getText());
+                //databaseReference.setValue(remarks.getText());
+                //databaseReference.setValue(cords.getText());
+                //Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
+                System.out.println("Remarks:" + remarks.getText());
 
-            uri = data1.getData();
-            StorageMetadata metadata = new StorageMetadata.Builder()
-                    .setContentType("image/jpg")
-                    .build();
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //Uri downloadurl = storageRef.getStorage().getDownloaduUrl();
 
-
-
-            //StorageReference filepath = mstorage.child("Photos").child(uri.getLastPathSegment());
-            UploadTask uploadTask = mstorage.putBytes(dataBAOS);
-
-            //databaseReference.setValue("Blllllwwww");
-
-            //databaseReference.setValue(timeholder.getText());
-            //databaseReference.setValue(remarks.getText());
-            //databaseReference.setValue(cords.getText());
-            //Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
-            System.out.println("Remarks:"+     remarks.getText()   );
-
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //Uri downloadurl = storageRef.getStorage().getDownloaduUrl();
-
-                    //DatabaseReference newPost = databaseReference.push();
+                        //DatabaseReference newPost = databaseReference.push();
                         //newPost.child("Time").setValue(timeholder.getText());
                         //newPost.child("Location").setValue(cords.getText());
                         //newPost.child("Remarks").setValue(remarks.getText());
                         //newPost.child("Image").setValue(downloadUri);
 
 
+                        Toast.makeText(activity2.this, "Successfull", Toast.LENGTH_LONG);
+                        mprog.dismiss();
+                        //finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-                    Toast.makeText(activity2.this,"Successfull",Toast.LENGTH_LONG);
-                    mprog.dismiss();
-                    //finish();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });
+                    }
+                });
+            }
         }
 
 

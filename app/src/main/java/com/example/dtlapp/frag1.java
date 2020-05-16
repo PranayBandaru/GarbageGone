@@ -1,5 +1,7 @@
 package com.example.dtlapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,7 @@ public class frag1 extends Fragment {
         mrecycler.setHasFixedSize(true);
         mrecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
         muploads = new ArrayList<>();
         mdatabaseref = FirebaseDatabase.getInstance().getReference("Photos");
         mdatabaseref.addValueEventListener(new ValueEventListener() {
@@ -64,6 +67,8 @@ public class frag1 extends Fragment {
 
             }
 
+
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getActivity(),databaseError.getMessage(),Toast.LENGTH_SHORT).show();
@@ -71,8 +76,17 @@ public class frag1 extends Fragment {
             }
         });
 
+
         return v;
     }
 
+
+    public void mapintent(View view)
+    {
+        Uri gmmIntentUri = Uri.parse("geo:37.7749,-122.4194");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
 
 }

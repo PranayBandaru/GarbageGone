@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -215,4 +216,13 @@ public class MainActivity extends AppCompatActivity {
             return frags[position];
         }
     }
+
+    public void mapintent(View view)
+    {
+        Uri gmmIntentUri = Uri.parse("geo:0,0");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+
 }

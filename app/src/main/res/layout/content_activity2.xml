@@ -8,11 +8,9 @@
 
     <ImageView
         android:id="@+id/pictHolder"
-        android:layout_width="243dp"
+        android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginStart="40dp"
         android:layout_marginTop="57dp"
-        android:layout_marginEnd="40dp"
         android:contentDescription="@string/desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,17 +19,19 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
-        android:layout_marginEnd="120dp"
-        android:layout_marginBottom="316dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="372dp"
         android:onClick="takePhoto"
         android:text="@string/take_a_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pictHolder" />
 
     <EditText
         android:id="@+id/remarks"
@@ -95,6 +95,8 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/remarks"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.433"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Cords" />
+        app:layout_constraintTop_toBottomOf="@+id/Cords"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
