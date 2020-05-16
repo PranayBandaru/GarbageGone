@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="410dp"
+    android:layout_margin = "5dp"
+    android:background="@color/bckColor">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/bckColor">
+        <ImageView
+            android:id="@+id/ImageCardV"
+            android:layout_width="match_parent"
+            android:layout_height="245dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"/>
+        <TextView
+            android:id="@+id/Timetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time: "
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="6dp"/>
+        <TextView
+            android:id="@+id/Cordstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X=   ,Y=    "
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="6dp"/>
+        <TextView
+            android:id="@+id/Remarkstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remarks: "
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="6dp"/>
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Go To maps"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:onClick="mapintent"
+
+
+            />
+    </LinearLayout>
+        
+</androidx.cardview.widget.CardView>

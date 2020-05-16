@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".frag2">
 
+
+    
     <View
         android:id="@+id/view"
         android:layout_width="wrap_content"

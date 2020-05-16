@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     static class myadapter extends FragmentPagerAdapter
     {
         String[] frags = {"View/Add Reports","Remove Reports"};

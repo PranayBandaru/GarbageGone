@@ -426,7 +426,7 @@ public class activity2 extends AppCompatActivity {
 
                     // \n is for new line
 
-                    cords.setText("Latitude:" + latitude+ "  Longitude: "+longitude);
+                    cords.setText("geo:" + latitude+ ","+longitude);
                     coordinates = ("Latitude:" + latitude+ "  Longitude: "+longitude);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     currentDateandTime = sdf.format(new Date().getTime());
@@ -576,10 +576,23 @@ public class activity2 extends AppCompatActivity {
                     },500);
 
                      */
+
+                    /*
                     Toast.makeText(activity2.this,"Upload Successfull!",Toast.LENGTH_SHORT).show();
                     Upload up = new Upload(coordinates.toString().trim(),times,remarkstxt,taskSnapshot.getUploadSessionUri().toString());
                     String uploadID = mdatabse.push().getKey();
                     mdatabse.child(uploadID).setValue(up);
+                    */
+                    Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                    while (!urlTask.isSuccessful());
+                    Uri downloadUrl = urlTask.getResult();
+
+                    //Log.d(TAG, "onSuccess: firebase download url: " + downloadUrl.toString()); //use if testing...don't need this line.
+                    Upload upload = new Upload(coordinates.toString().trim(),times,remarkstxt,downloadUrl.toString());
+
+                    String uploadId = mdatabse.push().getKey();
+                    mdatabse.child(uploadId).setValue(upload);
+
                     //mdatabse.child(uploadID).setValue("YEEEEEEEEEEEEE");
 
                     startActivity(new Intent(activity2.this, MainActivity.class));
