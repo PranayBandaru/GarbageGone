@@ -15,11 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="23dp"
+        android:background="@color/colorAccent"
         android:clickable="true"
         android:focusable="true"
         android:onClick="dosomething"
-        android:background="@color/colorPrimaryDark"
         android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
