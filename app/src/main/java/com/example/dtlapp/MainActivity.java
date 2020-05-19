@@ -13,6 +13,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static int SPLASH_TIME_OUT = 200;
+
     TabLayout mytab;
     public ViewPager mypage;
     EditText emailf;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         setContentView(R.layout.activity_main);
+
         super.onCreate(savedInstanceState);
 
         mytab = (TabLayout)findViewById(R.id.tabl);
@@ -81,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //setContentView(R.layout.activity_main);
 
 
 

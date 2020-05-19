@@ -53,7 +53,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Upload currentupload = mupload.get(position);
         holder.cordstext.setText(currentupload.getcords());
         cordinatesObtained = currentupload.getcords();
-        holder.remarkstext.setText(currentupload.getremarks());
+        holder.remarkstext.setText("Remarks: " +  currentupload.getremarks());
         holder.timetext.setText(currentupload.gettime());
         mapbutton.setOnClickListener(new View.OnClickListener() {
             @Override

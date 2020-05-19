@@ -5,8 +5,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,13 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".loggedIn"></activity>
+
+
+        <activity android:name=".loggedIn" />
         <activity
             android:name=".activity2"
             android:label="@string/title_activity_activity2"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".MainActivity"/>
 
-        <activity android:name=".MainActivity">
+            <activity android:name=".spl"
+                >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

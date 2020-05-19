@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="410dp"
+    android:layout_height="405dp"
     android:layout_margin = "5dp"
-    android:background="@color/bckColor">
+    android:background="@color/colorPrimary">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="405dp"
         android:orientation="vertical"
         android:background="@color/bckColor">
         <ImageView
@@ -26,7 +26,7 @@
             android:textColor="@android:color/white"
             android:textSize="17sp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="6dp"/>
         <TextView
             android:id="@+id/Cordstext"

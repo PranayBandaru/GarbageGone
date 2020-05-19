@@ -53,17 +53,28 @@ public class frag1 extends Fragment {
 
 
         muploads = new ArrayList<>();
+
+
+        madapter = new ImageAdapter(getActivity(),muploads);
+        //madapter.setOnItemClickListener(this);
+        madapter.notifyDataSetChanged();
+        mrecycler.setAdapter(madapter);
+
+        //mdatabaseref.notify();
         mdatabaseref = FirebaseDatabase.getInstance().getReference("Photos");
         mdatabaseref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                muploads.clear();
+
                 for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
                     Upload upload = postSnapshot.getValue(Upload.class);
                     muploads.add(upload);
                 }
-                madapter = new ImageAdapter(getActivity(),muploads);
-                mrecycler.setAdapter(madapter);
+
+                madapter.notifyDataSetChanged();
 
             }
 
