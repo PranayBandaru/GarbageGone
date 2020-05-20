@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                 if(firebaseAuth.getCurrentUser() != null){
 
                     //Toast.makeText(MainActivity.this, "Bleeeeep", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(MainActivity.this,loggedIn.class));
                 }
             }
         };
@@ -175,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(!task.isSuccessful()) {
                     Toast.makeText(MainActivity.this, "Sign in failed", Toast.LENGTH_LONG).show();
+                }
+                else {
+
+                    startActivity(new Intent(MainActivity.this,loggedIn.class));
                 }
             }
         });

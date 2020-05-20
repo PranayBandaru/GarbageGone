@@ -11,10 +11,10 @@
         android:layout_width="289dp"
         android:layout_height="87dp"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="389dp"
+        android:layout_marginTop="62dp"
         android:checkedButton="@id/overflow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@id/button">
 
         <RadioButton
             android:id="@+id/overflow"

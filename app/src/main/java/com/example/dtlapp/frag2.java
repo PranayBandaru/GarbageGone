@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 /**
@@ -69,11 +70,11 @@ public class frag2 extends Fragment {
                 if(firebaseAuth.getCurrentUser() != null){
 
                     Toast.makeText(getActivity(), "Bleeeeep", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getActivity(),loggedIn.class));
+
+                    startSignin();
                 }
             }
         };
-        startSignin();
 
     }
 
@@ -82,6 +83,7 @@ public class frag2 extends Fragment {
     public void onStart() {
         super.onStart();
 
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         //mAuth.addAuthStateListener(mAuthListener);
     }
 
@@ -110,7 +112,12 @@ public class frag2 extends Fragment {
             mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(!task.isSuccessful()) {
+                    if(task.isSuccessful()) {
+                        startActivity(new Intent(getActivity(),loggedIn.class));
+
+                    }
+                    else
+                    {
                         Toast.makeText(getActivity(), "Sign in failed", Toast.LENGTH_LONG).show();
                     }
                 }

@@ -21,7 +21,7 @@ public class spl extends AppCompatActivity {
                 startActivity(new Intent(spl.this,MainActivity.class));
 
             }
-        }, 2500);
+        }, 2000);
 
     }
 }

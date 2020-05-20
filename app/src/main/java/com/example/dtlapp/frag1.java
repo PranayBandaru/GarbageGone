@@ -49,7 +49,11 @@ public class frag1 extends Fragment {
 
         mrecycler = v.findViewById(R.id.recyclerv);
         mrecycler.setHasFixedSize(true);
-        mrecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(false);
+        mrecycler.setLayoutManager(linearLayoutManager);
+        //LinearLayoutManager.setReverseLayout(true);
 
 
         muploads = new ArrayList<>();
@@ -73,6 +77,7 @@ public class frag1 extends Fragment {
                     Upload upload = postSnapshot.getValue(Upload.class);
                     muploads.add(upload);
                 }
+                mrecycler.smoothScrollToPosition(100000);
 
                 madapter.notifyDataSetChanged();
 

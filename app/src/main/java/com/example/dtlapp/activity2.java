@@ -443,7 +443,7 @@ public class activity2 extends AppCompatActivity {
                     timeholder.setText("Time: "+ currentDateandTime);
                     times = ("Time: "+ currentDateandTime);
 
-                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {
                     // Can't get location.
                     // GPS or network is not enabled.
@@ -577,7 +577,7 @@ public class activity2 extends AppCompatActivity {
     private void UploadFile()
     {
 
-        Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(activity2.this,"Successfull cords:" + cords.getText(),Toast.LENGTH_LONG).show();
         if(imgg != null)
         {
             StorageReference filereRef = mstorage.child(+System.currentTimeMillis()+"."+getFileExtension(imgg));

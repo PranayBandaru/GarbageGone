@@ -50,7 +50,11 @@ public class loggedIn extends AppCompatActivity {
 
         recycler = findViewById(R.id.loginRecycler);
         recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(loggedIn.this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+
+        linearLayoutManager.setStackFromEnd(true);
+        recycler.setLayoutManager(linearLayoutManager);
 
 
         muploads = new ArrayList<>();
@@ -71,6 +75,7 @@ public class loggedIn extends AppCompatActivity {
                     muploads.add(upload);
                     upload.setKey(postSnapshot.getKey());
                 }
+                recycler.smoothScrollToPosition(100000);
 
                 madapter.notifyDataSetChanged();
             }
