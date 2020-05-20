@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="417dp"
+    android:layout_height="423dp"
     android:layout_margin="8dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="420dp">
+        android:layout_height="425dp">
 
         <ImageView
             android:id="@+id/loginimage"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="41dp"
             android:text="Remarks"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,9 +37,9 @@
         <Button
             android:id="@+id/loginmapsb"
             android:layout_width="160dp"
-            android:layout_height="64sp"
+            android:layout_height="62sp"
             android:layout_marginStart="15dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="107dp"
             android:text="Go TO maps"
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="210dp"
+            android:layout_marginBottom="202dp"
             android:text="Time"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@+id/remarkslogin"
@@ -60,15 +60,28 @@
         <Button
             android:id="@+id/loginclearedb"
             android:layout_width="180sp"
-            android:layout_height="64sp"
+            android:layout_height="62sp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="107dp"
             android:layout_marginEnd="14dp"
             android:text="Report CLEARED"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/loginmapsb"
             app:layout_constraintTop_toBottomOf="@+id/loginimage" />
+
+        <TextView
+            android:id="@+id/cordstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="6dp"
+            android:text="Type: "
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/loginmapsb"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/remarkslogin" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

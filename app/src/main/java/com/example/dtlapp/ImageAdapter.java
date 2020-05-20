@@ -51,9 +51,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload currentupload = mupload.get(position);
-        holder.cordstext.setText(currentupload.getcords());
+        //holder.cordstext.setText(currentupload.getcords());
         cordinatesObtained = currentupload.getcords();
         holder.remarkstext.setText("Remarks: " +  currentupload.getremarks());
+        if(currentupload.getselectedRB() != null)
+        {
+            holder.type.setText("Type: " + currentupload.getselectedRB());
+        }
         holder.timetext.setText(currentupload.gettime());
         mapbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,19 +86,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        public TextView cordstext;
+        //public TextView cordstext;
         public TextView timetext;
         public TextView remarkstext;
+        public TextView type;
         public ImageView imgview;
 
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            cordstext = itemView.findViewById(R.id.Cordstext);
+            //cordstext = itemView.findViewById(R.id.Cordstext);
             timetext = itemView.findViewById(R.id.Timetext);
             remarkstext = itemView.findViewById(R.id.Remarkstext);
             imgview = itemView.findViewById(R.id.ImageCardV);
+            imgview = itemView.findViewById(R.id.ImageCardV);
+            type = itemView.findViewById(R.id.type);
             itemView.setOnClickListener(this);
             //itemView.setOnCreateContextMenuListener(this);
 

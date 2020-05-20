@@ -25,6 +25,8 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +84,10 @@ public class activity2 extends AppCompatActivity {
     FirebaseFirestore db;
     Uri uri;
     Uri imgg;
+    RadioGroup rdg;
+    RadioButton grb;
+    String selectedRB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +106,8 @@ public class activity2 extends AppCompatActivity {
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mstorage = FirebaseStorage.getInstance().getReference("Photos");
         mdatabse = FirebaseDatabase.getInstance().getReference("Photos");
+
+        rdg = (RadioGroup)findViewById(R.id.radiogroup);
 
         //f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -466,7 +474,10 @@ public class activity2 extends AppCompatActivity {
 
 
         remarkstxt = remarks.getText().toString();
-
+        int RadioID = rdg.getCheckedRadioButtonId();
+        grb = findViewById(RadioID);
+        selectedRB = (String) grb.getText();
+        Toast.makeText(this,"SELECTED:"+selectedRB,Toast.LENGTH_LONG);
         if(remarkstxt.equals(""))
         {
             Toast.makeText(activity2.this,"Please Enter Remarks",Toast.LENGTH_LONG).show();
@@ -596,7 +607,7 @@ public class activity2 extends AppCompatActivity {
                     Uri downloadUrl = urlTask.getResult();
 
                     //Log.d(TAG, "onSuccess: firebase download url: " + downloadUrl.toString()); //use if testing...don't need this line.
-                    Upload upload = new Upload(coordinates.toString().trim(),times,remarkstxt,downloadUrl.toString());
+                    Upload upload = new Upload(coordinates.toString().trim(),times,remarkstxt,downloadUrl.toString(),selectedRB);
 
                     String uploadId = mdatabse.push().getKey();
                     mdatabse.child(uploadId).setValue(upload);

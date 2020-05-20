@@ -65,7 +65,7 @@ public class loginImageAdapter extends RecyclerView.Adapter<loginImageAdapter.LI
     @Override
     public void onBindViewHolder(@NonNull LImageViewHolder holder, final int position) {
         Upload currentupload1 = mupload.get(position);
-        //holder.cordstext.setText(currentupload.getcords());
+        holder.cordstext.setText("Type: "+currentupload1.getselectedRB());
         cordinatesObtained = currentupload1.getcords();
         holder.remarkstext1.setText("Remarks: "+currentupload1.getremarks());
         holder.timetext.setText(currentupload1.gettime());
@@ -125,16 +125,17 @@ public class loginImageAdapter extends RecyclerView.Adapter<loginImageAdapter.LI
 
     public class LImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        //public TextView cordstext;
+        public TextView cordstext;
         public TextView timetext;
         public TextView remarkstext1;
         public ImageView imgview;
 
 
+
         public LImageViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            //cordstext = itemView.findViewById(R.id.Cordstext);
+            cordstext = itemView.findViewById(R.id.cordstext);
             timetext = (TextView) itemView.findViewById(R.id.timelogin);
             remarkstext1 = (TextView) itemView.findViewById(R.id.remarkslogin);
             imgview =  (ImageView) itemView.findViewById(R.id.loginimage);

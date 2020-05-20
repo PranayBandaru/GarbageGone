@@ -8,12 +8,13 @@ public class Upload {
     private String mTime;
     private String mImageURL;
     private String mKey;
+    private String mselectedRB;
 
     public Upload() {
 
     }
 
-    public Upload(String Cords, String Time, String Remarks, String ImageURL) {
+    public Upload(String Cords, String Time, String Remarks, String ImageURL, String selectedRB) {
         if (Cords.trim().equals("")) {
             Cords = "NOT FOUND";
         }
@@ -28,6 +29,8 @@ public class Upload {
         mImageURL = ImageURL;
         mTime = Time;
         mRemarks = Remarks;
+        mselectedRB = selectedRB;
+
 
     }
 
@@ -43,6 +46,11 @@ public class Upload {
         return mRemarks;
     }
 
+    public String getselectedRB()
+    {
+        return mselectedRB;
+    }
+
     public void setcords(String Cords) {
         mCords = Cords;
     }
@@ -53,6 +61,10 @@ public class Upload {
 
     public void setremarks(String Remarks) {
         mRemarks = Remarks;
+    }
+
+    public void setselectedRB(String selectedRB){
+        mselectedRB = selectedRB;
     }
 
     public String getImageURL() {
