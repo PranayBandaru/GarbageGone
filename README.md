@@ -8,6 +8,14 @@ Available in Dark and Light themes. Themes are pre-chosen depending on the user 
 ## License
 This project is licensed under the Apache License 2.0, a permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code. Trademark use is also strictly prohibited. Any material found which vandalises or threatens any sort of plagiarism will be strictly given a legal action.
 
+## Preview
+
+### Dark theme 
+<p align="center"><img src="https://firebasestorage.googleapis.com/v0/b/garbagegone-fa7e4.appspot.com/o/darkSC.jpg?alt=media&token=a1534240-3082-4523-91c9-38f5c29ad360"></p> 
+
+### Light theme
+<p align="center"><img src="https://firebasestorage.googleapis.com/v0/b/garbagegone-fa7e4.appspot.com/o/lightSC.jpg?alt=media&token=3b65bb9c-f6a5-4a34-9553-7291326ac748"></p> 
+
 ## Android Signed APK build (Debug)
 The signed ```.apk``` debug build variant of this app that you can install on your Android device is available here in the link below. \
 https://firebasestorage.googleapis.com/v0/b/garbagegone-fa7e4.appspot.com/o/app-debug-GarbageGone?alt=media&token=d3bff465-a9cc-45c4-94b8-f6114f99abe9
