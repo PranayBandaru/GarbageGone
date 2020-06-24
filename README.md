@@ -18,7 +18,7 @@ This project is licensed under the Apache License 2.0, a permissive license whos
 
 ## Android Signed APK build (Debug)
 The signed ```.apk``` debug build variant of this app that you can install on your Android device is available here in the link below. \
-https://firebasestorage.googleapis.com/v0/b/garbagegone-fa7e4.appspot.com/o/app-debug-GarbageGone?alt=media&token=d3bff465-a9cc-45c4-94b8-f6114f99abe9
+https://firebasestorage.googleapis.com/v0/b/garbagegone-fa7e4.appspot.com/o/app-debug.apk?alt=media&token=766f5919-7a85-4207-b801-dde7465c340a
 
 Use the following credentials to login for testing purposes: Username:dev1@garbagegone.com, pass: 123123
 
@@ -32,5 +32,8 @@ The second screen appears on swiping to the right. This section is intended for 
 - Firebase Database         (Realtime database)
 - Firebase Storage          (Mass Storage)
 
+## Installation (Android app configuration)
+- Go to your Firebase console, setup this project, select Android app, add the package name of this app and download <b>google-services.json</b>.
+- Move the <b>google-services.json</b> file you just downloaded into your Android app module root directory.
 ###### Note 
 Developed with Android Studio version 3.6.3.
