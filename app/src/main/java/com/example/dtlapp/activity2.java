@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
@@ -34,9 +35,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseApp;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,7 +74,7 @@ public class activity2 extends AppCompatActivity {
     private ImageView imageView;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     TextView cords;
-    String coordinates,times,remarkstxt;
+    String coordinates, times, remarkstxt;
     TextView timeholder;
     EditText remarks;
     Firebase f;
@@ -87,7 +93,9 @@ public class activity2 extends AppCompatActivity {
     RadioGroup rdg;
     RadioButton grb;
     String selectedRB;
-
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
+    double lat;
+    double longi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +115,7 @@ public class activity2 extends AppCompatActivity {
         mstorage = FirebaseStorage.getInstance().getReference("Photos");
         mdatabse = FirebaseDatabase.getInstance().getReference("Photos");
 
-        rdg = (RadioGroup)findViewById(R.id.radiogroup);
+        rdg = (RadioGroup) findViewById(R.id.radiogroup);
 
         //f = new Firebase("https://garbagegone-fa7e4.firebaseio.com/");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -141,15 +149,22 @@ public class activity2 extends AppCompatActivity {
     }
 
 
-
     public void takePhoto(View view) {
 
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(activity2.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+
+
         } else {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            getcurrentloc();
             startActivityForResult(cameraIntent, CAMERA_REQUEST);
-
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity2.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            getcurrentloc();
         }
     }
 
@@ -167,8 +182,45 @@ public class activity2 extends AppCompatActivity {
             //Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             //}
         }
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
+            getcurrentloc();
+        } else {
+            Toast.makeText(activity2.this, "Location Permission denied, Please grant permission and try capturing again", Toast.LENGTH_LONG).show();
+        }
     }
 
+
+    private void getcurrentloc() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(activity2.this).requestLocationUpdates(locationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                LocationServices.getFusedLocationProviderClient(activity2.this).removeLocationUpdates(this);
+                if (locationResult != null && locationResult.getLocations().size() > 0) {
+                    int latestLocationIndex = locationResult.getLocations().size() - 1;
+                    lat = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                    longi = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+
+                }
+            }
+        }, Looper.getMainLooper());
+
+    }
 
 
     public void dosomething(View view) {
@@ -184,224 +236,10 @@ public class activity2 extends AppCompatActivity {
         }
     }*/
 
-    public class GPSTracker extends Service implements LocationListener {
 
-
-        //private static final Location TODO = ;
-        private final Context mContext;
-
-        // Flag for GPS status
-        boolean isGPSEnabled = false;
-
-        // Flag for network status
-        boolean isNetworkEnabled = false;
-
-        // Flag for GPS status
-        boolean canGetLocation = false;
-
-        Location location; // Location
-        public double latitude; // Latitude
-        public double longitude; // Longitude
-
-        // The minimum distance to change Updates in meters
-        private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-
-        // The minimum time between updates in milliseconds
-        private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-        // Declaring a Location Manager
-        protected LocationManager locationManager;
-
-        public GPSTracker(Context context) {
-            this.mContext = context;
-            getLocation();
-        }
-
-        public Location getLocation() {
-            try {
-                locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
-               /* if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return TODO;
-                }
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);*/
-                // Getting GPS status
-                isGPSEnabled = locationManager
-                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-                // Getting network status
-                isNetworkEnabled = locationManager
-                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-                if (!isGPSEnabled && !isNetworkEnabled) {
-                    // No network provider is enabled
-                } else {
-                    this.canGetLocation = true;
-                    if (isNetworkEnabled) {
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            // TODO: Consider calling
-                            //    ActivityCompat#requestPermissions
-                            // here to request the missing permissions, and then overriding
-                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                            //                                          int[] grantResults)
-                            // to handle the case where the user grants the permission. See the documentation
-                            // for ActivityCompat#requestPermissions for more details.
-
-                        }
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("Network", "Network");
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
-                    }
-                    // If GPS enabled, get latitude/longitude using GPS Services
-                    if (isGPSEnabled) {
-                        if (location == null) {
-                            locationManager.requestLocationUpdates(
-                                    LocationManager.GPS_PROVIDER,
-                                    MIN_TIME_BW_UPDATES,
-                                    MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                            Log.d("GPS Enabled", "GPS Enabled");
-                            if (locationManager != null) {
-                                location = locationManager
-                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                if (location != null) {
-                                    latitude = location.getLatitude();
-                                    longitude = location.getLongitude();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return location;
-        }
-
-
-        /**
-         * Stop using GPS listener
-         * Calling this function will stop using GPS in your app.
-         * */
-        public void stopUsingGPS(){
-            if(locationManager != null){
-                locationManager.removeUpdates(GPSTracker.this);
-            }
-        }
-
-
-        /**
-         * Function to get latitude
-         * */
-        public double getLatitude(){
-            if(location != null){
-                latitude = location.getLatitude();
-            }
-
-            // return latitude
-            return latitude;
-        }
-
-
-        /**
-         * Function to get longitude
-         * */
-        public double getLongitude(){
-            if(location != null){
-                longitude = location.getLongitude();
-            }
-
-            // return longitude
-            return longitude;
-        }
-
-        /**
-         * Function to check GPS/Wi-Fi enabled
-         * @return boolean
-         * */
-        public boolean canGetLocation() {
-            return this.canGetLocation;
-        }
-
-
-        /**
-         * Function to show settings alert dialog.
-         * On pressing the Settings button it will launch Settings Options.
-         * */
-        public void showSettingsAlert(){
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
-
-            // Setting Dialog Title
-            alertDialog.setTitle("GPS is settings");
-
-            // Setting Dialog Message
-            alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
-
-            // On pressing the Settings button.
-            alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog,int which) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    mContext.startActivity(intent);
-                }
-            });
-
-            // On pressing the cancel button
-            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-
-            // Showing Alert Message
-            alertDialog.show();
-        }
-
-
-        @Override
-        public void onLocationChanged(Location location) {
-        }
-
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-
-        @Override
-        public IBinder onBind(Intent arg0) {
-            return null;
-        }
-    }
-    GPSTracker gps;
 
     public String currentDateandTime;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if the result is capturing Image
@@ -414,9 +252,8 @@ public class activity2 extends AppCompatActivity {
             imageView.setImageBitmap(photo);
 
             imgg = getImageUri(getApplicationContext(), photo);
-            if(imgg == (null))
-            {
-                Toast.makeText(activity2.this,"DATA IS NULL",Toast.LENGTH_LONG).show();
+            if (imgg == (null)) {
+                Toast.makeText(activity2.this, "DATA IS NULL", Toast.LENGTH_LONG).show();
             }
 
             data1 = data;
@@ -424,24 +261,19 @@ public class activity2 extends AppCompatActivity {
         }
 
 
-
-            if (requestCode == CAMERA_REQUEST) {
-            gps = new GPSTracker(this);
+        if (requestCode == CAMERA_REQUEST) {
 
             if (resultCode == RESULT_OK) {
                 //previewCapturedImage();
-                if (gps.canGetLocation()) {
-                    double latitude = gps.getLatitude();
-                    double longitude = gps.getLongitude();
-
+                if (lat != 0 && longi != 0) {
                     // \n is for new line
 
-                    cords.setText("geo:" + latitude+ ","+longitude);
-                    coordinates = ("geo:0,0?q=" + latitude+ ","+longitude+"(Pin)");
+                    cords.setText("geo:" + lat + "," + longi);
+                    coordinates = ("geo:0,0?q=" + lat + "," + longi + "(Pin)");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                     currentDateandTime = sdf.format(new Date().getTime());
-                    timeholder.setText("Time: "+ currentDateandTime);
-                    times = ("Time: "+ currentDateandTime);
+                    timeholder.setText("Time: " + currentDateandTime);
+                    times = ("Time: " + currentDateandTime);
 
                     //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
                 } else {
@@ -464,7 +296,11 @@ public class activity2 extends AppCompatActivity {
             }
         }
 
+
+
+
     }
+
 
     public void submitb(View view) {
         //DatabaseReference conditionRef = mRootRef.child("condition");
